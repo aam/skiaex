@@ -27,4 +27,11 @@ solutions = [
 cache_dir = None
 ```
 
-``` gclient sync ``` should bring this app together with skia into your working folder.
+```gclient sync``` should bring this app together with skia into your working folder.
+
+To build and run:
+```
+cd src
+ninja -C out/Debug using_skia
+out/Debug/using_skia
+````
