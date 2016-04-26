@@ -35,3 +35,35 @@ cd src
 ninja -C out/Debug using_skia
 out/Debug/using_skia
 ````
+
+HarfBuzz and its prerequisites
+===
+
+There are no gyp build files for HarfBuzz, Freetype2, Cairo, so you have to install and build them manually.
+
+For example, like this:
+
+```
+sudo apt-get install autoconf automake libtool pkg-config ragel gtk-doc-tools
+git clone https://github.com/behdad/harfbuzz.git
+cd harfbuzz
+./autogen.sh
+./configure
+make && sudo make install
+```
+
+```
+git clone http://git.savannah.gnu.org/cgit/freetype/freetype2.git
+cd freetype2
+./autogen.sh
+./configure
+make && sudo make install
+```
+
+```
+git clone git://anongit.freedesktop.org/git/cairo
+cd cairo
+./autogen.sh
+./configure
+make && sudo make install
+```

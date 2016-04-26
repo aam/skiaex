@@ -14,12 +14,19 @@
       'include_dirs': [
         'third_party/skia/include/config',
         'third_party/skia/include/core',
+        '/usr/local/include/harfbuzz',
+        '/usr/local/include/freetype2',
+        '/usr/local/include/cairo',
       ],
       'sources': [
         'app/main.cpp'
       ],
+      'libraries': [
+         '/usr/local/lib/libcairo.so',
+         '/usr/local/lib/libharfbuzz.so',
+      ],
       'ldflags': [
-        '-std=c++11'
+        '-std=c++11',
       ],
       'cflags': [
         '-Werror', '-W', '-Wall', '-Wextra', '-Wno-unused-parameter', '-g', '-O0'
