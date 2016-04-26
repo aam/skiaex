@@ -1,5 +1,5 @@
 # skiaex
-Skia example
+Initial setup
 ===
 
 Create .gclient file in your working folder:
@@ -28,13 +28,6 @@ cache_dir = None
 ```
 
 ```gclient sync``` should bring this app together with skia into your working folder.
-
-To build and run:
-```
-cd src
-ninja -C out/Debug using_skia
-out/Debug/using_skia
-````
 
 HarfBuzz and its prerequisites
 ===
@@ -67,3 +60,13 @@ cd cairo
 ./configure
 make && sudo make install
 ```
+
+Build and run
+===
+
+To build and run:
+```
+cd src
+ninja -C out/Debug using_skia
+out/Debug/using_skia
+````
