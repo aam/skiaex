@@ -70,3 +70,5 @@ cd src
 ninja -C out/Debug using_skia
 out/Debug/using_skia
 ````
+
+This produces ```out-skiahf.pdf``` and ```out-cairo.png```.
