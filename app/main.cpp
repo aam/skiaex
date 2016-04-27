@@ -214,7 +214,7 @@ class Placement {
         glyphs[i] = info[i].codepoint;
         skpos[i] = SkPoint::Make(
           current_x + pos[i].x_offset / 64.,
-          current_y + pos[i].y_offset / 64.);
+          current_y - pos[i].y_offset / 64.);
         current_x += pos[i].x_advance / 64.;
         current_y += pos[i].y_advance / 64.;
       }
@@ -241,8 +241,9 @@ int main(int argc, char** argv) {
 
     // CreateAndPlaceGlyphs(36, 36 * .5, "fonts/TSCu_SaiIndira.ttf", "டஉடு");
     // CreateAndPlaceGlyphs(36, 36 * .5, "fonts/DejaVuSans.ttf", "حرف‌باز");
-    Placement placement("fonts/DejaVuSans.ttf", "حرف‌باز Привет, Вася! Hello, world! டஉடு", 36 /* font_size */);
-    placement.DrawGlyphsUsingCairo(36 * .5 /* margin */);
+    // Placement placement("fonts/NotoNastaliqUrdu-Regular.ttf", "حرف‌باز Привет, Вася! Hello, world! டஉடு", 24 /* font_size */);
+    Placement placement("fonts/NotoNastaliqUrdu-Regular.ttf", "حرف‌باز", 24 /* font_size */);
+    placement.DrawGlyphsUsingCairo(24 * .5 /* margin */);
     placement.DrawGlyphsUsingSkia(new SkFILEWStream("out-skiahf.pdf"));
 
     return 0;
