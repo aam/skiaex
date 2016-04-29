@@ -27,8 +27,8 @@ make && sudo make install
 Build and run with Skia cmake build
 ===
 
-1. Get harfbuzz and freetype2 prerequisites(see below)
-2. Get and build cmake Skia
+- Get harfbuzz and freetype2 prerequisites(see below)
+- Get Skia sources and run cmake build of Skia
 ```
 cd $HOME
 git clone https://skia.googlesource.com/skia.git
@@ -36,13 +36,17 @@ cd skia/cmake
 cmake . -G Ninja
 ninja skia
 ```
-
-3. Build this app
+- Get the source code for this app
 ```
-c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/harfbuzz -I/usr/local/include/freetype2 app/main.cpp         @${HOME}/skia/skia/cmake/skia_link_arguments.txt -L/usr/local/lib -lharfbuzz -lfreetype -o using_skia
+cd $HOME
+git clone https://github.com/aam/skiaex.git
 ```
-
-4. Run it
+- Build it
+```
+cd $HOME/skiaex  
+c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/harfbuzz -I/usr/local/include/freetype2  app/main.cpp @${HOME}/skia/skia/cmake/skia_link_arguments.txt -L/usr/local/lib -lharfbuzz -lfreetype -o using_skia
+```
+- Run it to produce pdf file with it's own source code
 ```
 ./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ```
@@ -74,11 +78,16 @@ solutions = [
 ]
 cache_dir = None
 ```
-
+- Get all the sources
 ```gclient sync``` should bring this app together with skia into your working folder.
 
+- Run ninja build
 ```
 cd src
 ninja -C out/Debug using_skia
+```
+
+- Run it to produce pdf file with it's own source code
+```
 out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ````
