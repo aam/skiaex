@@ -11,7 +11,6 @@
 #include <cairo.h>
 #include <cairo-ft.h>
 
-
 struct Config {
   double page_width;
   double page_height;
@@ -27,10 +26,8 @@ struct Config {
 
   Config(int argc, char **argv) :
     page_width(800.f), page_height(600.f),
-    title("..."), author("..."), subject("..."), keywords("..."),
-    creator("..."),
-    font_file("fonts/NotoNastaliqUrdu-Regular.ttf"),
-    font_size(24.0f) {
+    title("..."), author("..."), subject("..."), keywords("..."), creator("..."),
+    font_file("fonts/NotoNastaliqUrdu-Regular.ttf"), font_size(24.0f) {
     for (int i = 1; i < argc; i++) {
       printf("Config arg[%d]=%s\n", argc, argv[i]);
       if (*argv[i] == '-') {
@@ -273,6 +270,24 @@ class Placement {
       }
 
       pageCanvas->drawPosText(glyphs, len * sizeof(uint16_t), skpos, glyphPaint);
+
+      current_x += 50;
+      current_y += 50;
+
+      SkTextBlobBuilder textBlobBuilder;
+      auto runBuffer = textBlobBuilder.allocRunPos(glyphPaint, len);
+      for (unsigned int i = 0; i < len; i++)
+      {
+        runBuffer.glyphs[i] = info[i].codepoint;
+        skpos[i] = SkPoint::Make(
+          current_x + pos[i].x_offset / 64.,
+          current_y - pos[i].y_offset / 64.);
+        current_x += pos[i].x_advance / 64.;
+        current_y += pos[i].y_advance / 64.;
+      }
+
+      pageCanvas->drawTextBlob(textBlobBuilder.build(), x, y, glyphPaint);
+
       pageCanvas->restore();
 
       free(skpos);
