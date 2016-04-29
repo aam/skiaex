@@ -87,7 +87,7 @@ cd src
 ninja -C out/Debug using_skia
 ```
 
-- Run it to produce pdf file with it's own source code
+- Run built binary
 ```
 out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ````
