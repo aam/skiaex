@@ -22,6 +22,8 @@ struct BaseOption {
   BaseOption(std::string _selector, std::string _description) :
     selector(_selector),
     description(_description) {}
+
+  virtual ~BaseOption() {}
 };
 
 template <class T> struct Option : BaseOption {
@@ -74,7 +76,7 @@ struct Config {
   SkStringOption *creator = new SkStringOption("-t", "PDF creator", SkString("---"));
   StdStringOption *font_file = new StdStringOption("-f", ".ttf font file", "fonts/DejaVuSans.ttf");
   DoubleOption *font_size = new DoubleOption("-z", "Font size", 8.0f);
-  DoubleOption *left_margin = new DoubleOption("-m", "Page height", 20.0f);
+  DoubleOption *left_margin = new DoubleOption("-m", "Left margin", 20.0f);
   DoubleOption *line_spacing_ratio = new DoubleOption("-h", "Line spacing ratio", 1.5f);
   StdStringOption *output_file_name = new StdStringOption("-o", ".pdf output file name", "out-skiahf.pdf");
 
@@ -107,6 +109,7 @@ struct Config {
       } else {
         printf("Ignoring unrecognized option: %s.\n", argv[i]);
         printf("Usage: %s {option value}\n", argv[0]);
+        printf("\tTakes text from stdin and produces pdf file.\n");
         printf("Supported options:\n");
         for (auto it = options.begin(); it != options.end(); ++it) {
           printf("\t%s\t%s (%s)\n", it->first.c_str(),
@@ -225,6 +228,9 @@ private:
   bool DrawGlyphs(hb_buffer_t *hb_buffer) {
     SkTextBlobBuilder textBlobBuilder;
     unsigned len = hb_buffer_get_length (hb_buffer);
+    if (len == 0) {
+      return true;
+    }
     hb_glyph_info_t *info = hb_buffer_get_glyph_infos (hb_buffer, NULL);
     hb_glyph_position_t *pos = hb_buffer_get_glyph_positions (hb_buffer, NULL);
     auto runBuffer = textBlobBuilder.allocRunPos(glyph_paint, len);
@@ -242,6 +248,7 @@ private:
     }
 
     pageCanvas->drawTextBlob(textBlobBuilder.build(), current_x, current_y, glyph_paint);
+    return true;
   } // end of DrawGlyphs
 
   std::unique_ptr<SkTime::DateTime> GetCurrentDateTime() {
