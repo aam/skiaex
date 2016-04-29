@@ -5,6 +5,7 @@
 #include "SkPaint.h"
 #include "SkStream.h"
 #include "SkString.h"
+#include "SkTextBlob.h"
 #include "SkTypeface.h"
 #include <hb.h>
 #include <hb-ft.h>
@@ -250,47 +251,27 @@ class Placement {
 
       pageCanvas->drawText(text, strlen(text), 0, 0, textPaint);
 
-      SkPoint *skpos = (SkPoint*)malloc(sizeof(SkPoint) * len);
-
       double current_x = 10;
       double current_y = 50;
 
       SkPaint glyphPaint(textPaint);
       glyphPaint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
-      SkAutoSTMalloc<128, uint16_t> glyphStorage(len);
-      uint16_t* glyphs = glyphStorage.get();
-      for (unsigned int i = 0; i < len; i++)
-      {
-        glyphs[i] = info[i].codepoint;
-        skpos[i] = SkPoint::Make(
-          current_x + pos[i].x_offset / 64.,
-          current_y - pos[i].y_offset / 64.);
-        current_x += pos[i].x_advance / 64.;
-        current_y += pos[i].y_advance / 64.;
-      }
-
-      pageCanvas->drawPosText(glyphs, len * sizeof(uint16_t), skpos, glyphPaint);
-
-      current_x += 50;
-      current_y += 50;
 
       SkTextBlobBuilder textBlobBuilder;
       auto runBuffer = textBlobBuilder.allocRunPos(glyphPaint, len);
       for (unsigned int i = 0; i < len; i++)
       {
         runBuffer.glyphs[i] = info[i].codepoint;
-        skpos[i] = SkPoint::Make(
+        ((SkPoint*)runBuffer.pos)[i] = SkPoint::Make(
           current_x + pos[i].x_offset / 64.,
           current_y - pos[i].y_offset / 64.);
         current_x += pos[i].x_advance / 64.;
         current_y += pos[i].y_advance / 64.;
       }
 
-      pageCanvas->drawTextBlob(textBlobBuilder.build(), x, y, glyphPaint);
+      pageCanvas->drawTextBlob(textBlobBuilder.build(), 0, 0, glyphPaint);
 
       pageCanvas->restore();
-
-      free(skpos);
 
       pdfDocument->endPage();
     }
