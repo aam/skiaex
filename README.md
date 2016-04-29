@@ -26,7 +26,7 @@ cd freetype2
 make && sudo make install
 ```
 
-Build and run with Skia cmake build
+Option 1 - Build and run with Skia cmake build
 ===
 - Get Skia sources and run cmake build of Skia
 ```
@@ -51,7 +51,7 @@ c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/har
 ./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ```
 
-Build and run with gyp
+Option 2 - Build and run with gyp
 ===
 
 Create .gclient file in your working folder:
