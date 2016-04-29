@@ -1,6 +1,6 @@
 # skiaex
 
-This sample demonstrates how to use Skia and HarfBuzz with Freetype to produce pdf file from a given stdin.
+This sample demonstrates how to use Skia and HarfBuzz with Freetype to produce .pdf-file from a given stdin.
 
 HarfBuzz and its prerequisites
 ===
