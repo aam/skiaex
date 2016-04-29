@@ -1,9 +1,11 @@
 # skiaex
 
+This sample demonstrates how to use Skia and HarfBuzz with Freetype to produce pdf file from a given stdin.
+
 HarfBuzz and its prerequisites
 ===
 
-There are no gyp build files for HarfBuzz, Freetype2 so you have to install and build them manually.
+You have to install HarfBuzz and Freetype2 if you don't have them on your machine.
 
 For example, like this:
 
@@ -26,8 +28,6 @@ make && sudo make install
 
 Build and run with Skia cmake build
 ===
-
-- Get harfbuzz and freetype2 prerequisites(see below)
 - Get Skia sources and run cmake build of Skia
 ```
 cd $HOME
