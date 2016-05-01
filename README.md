@@ -40,7 +40,7 @@ c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/har
 ```
 - Run it to produce pdf file with it's own source code
 ```
-./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
+LD_LIBRARY_PATH=/usr/local/lib ./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ```
 
 Option 2 - Build and run with gyp
@@ -81,5 +81,5 @@ ninja -C out/Debug using_skia
 
 - Run built binary
 ```
-out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
+LD_LIBRARY_PATH=/usr/local/lib out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ````
