@@ -15,7 +15,6 @@
         'third_party/skia/include/config',
         'third_party/skia/include/core',
         '/usr/local/include/harfbuzz',
-        '/usr/local/include/freetype2',
       ],
       'sources': [
         'app/main.cpp'

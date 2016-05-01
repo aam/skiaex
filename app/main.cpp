@@ -7,9 +7,11 @@
 #include "SkString.h"
 #include "SkTextBlob.h"
 #include "SkTypeface.h"
-#include <hb.h>
-#include <hb-ft.h>
 
+#include <hb.h>
+#include <hb-ot.h>
+
+#include <cassert>
 #include <iostream>
 #include <map>
 
@@ -124,20 +126,55 @@ struct Config {
 
 const double FONT_SIZE_SCALE = 64.0f;
 
+struct Face {
+  struct HBFDel { void operator()(hb_face_t* f) { hb_face_destroy(f); } };
+  std::unique_ptr<hb_face_t, HBFDel> fHarfBuzzFace;
+  sk_sp<SkTypeface> fSkiaTypeface;
+
+  Face(const char* path, int index) {
+    // fairly portable mmap impl
+    auto data = SkData::MakeFromFileName(path);
+    assert(data);
+    if (!data) { return; }
+    fSkiaTypeface.reset(
+      SkTypeface::CreateFromStream(
+        new SkMemoryStream(data), index));
+    assert(fSkiaTypeface);
+    if (!fSkiaTypeface) { return; }
+    auto destroy = [](void *d) { static_cast<SkData*>(d)->unref(); };
+    const char* bytes = (const char*)data->data();
+    unsigned int size = (unsigned int)data->size();
+    hb_blob_t* blob = hb_blob_create(bytes,
+                                     size,
+                                     HB_MEMORY_MODE_READONLY,
+                                     data.release(),
+                                     destroy);
+    assert(blob);
+    hb_blob_make_immutable(blob);
+    hb_face_t* face = hb_face_create(blob, (unsigned)index);
+    hb_blob_destroy(blob);
+    assert(face);
+    if (!face) {
+        fSkiaTypeface.reset();
+        return;
+    }
+    hb_face_set_index(face, (unsigned)index);
+    hb_face_set_upem(face, fSkiaTypeface->getUnitsPerEm());
+    fHarfBuzzFace.reset(face);
+  }
+};
+
 class Placement {
  public:
-  Placement(Config &_config, SkWStream* outputStream) : config(_config),
-    pdfDocument(SkDocument::CreatePDF(outputStream)) {
-    FT_Error ft_error;
+  Placement(Config &_config, SkWStream* outputStream) :
+    config(_config), pdfDocument(SkDocument::CreatePDF(outputStream)) {
+    face = new Face(config.font_file->value.c_str(), 0 /* index */);
+    hb_font = hb_font_create(face->fHarfBuzzFace.get());
 
-    if ((ft_error = FT_Init_FreeType (&ft_library)))
-      abort();
-    if ((ft_error = FT_New_Face (ft_library, config.font_file->value.c_str(), 0 /* face_index */, &ft_face)))
-      abort();
-    if ((ft_error = FT_Set_Char_Size (ft_face, config.font_size->value * FONT_SIZE_SCALE /* char_width */,
-        config.font_size->value * FONT_SIZE_SCALE /* char_height */, 0 /* horz_resolution */, 0 /* vert_resolution */)))
-      abort();
-    hb_font = hb_ft_font_create (ft_face, NULL);
+    hb_font_set_scale(hb_font,
+        FONT_SIZE_SCALE * config.font_size->value,
+        FONT_SIZE_SCALE * config.font_size->value);
+    hb_ot_font_set_funcs(hb_font);
 
     typedef SkDocument::Attribute Attr;
     Attr pdf_info[] = {
@@ -160,18 +197,15 @@ class Placement {
     glyph_paint.setColor(SK_ColorBLACK);
     glyph_paint.setTextSize(config.font_size->value);
     SkAutoTUnref<SkFontMgr> fm(SkFontMgr::RefDefault());
-    SkTypeface *typeface = SkTypeface::CreateFromFile(config.font_file->value.c_str(), 0);
-    glyph_paint.setTypeface(typeface);
+    glyph_paint.setTypeface(face->fSkiaTypeface);
     glyph_paint.setTextEncoding(SkPaint::kGlyphID_TextEncoding);
 
     NewPage();
   } // end of Placement
 
   ~Placement() {
+    delete face;
     hb_font_destroy (hb_font);
-
-    FT_Done_Face (ft_face);
-    FT_Done_FreeType (ft_library);
   }
 
   void WriteLine(const char *text) {
@@ -202,8 +236,8 @@ class Placement {
 private:
   Config config;
 
-  FT_Library ft_library;
-  FT_Face ft_face;
+  Face *face;
+
   hb_font_t *hb_font;
 
   sk_sp<SkDocument> pdfDocument;
