@@ -35,7 +35,7 @@ git clone https://github.com/aam/skiaex.git
 ```
 - Build it
 ```
-cd $HOME/skiaex  
+cd $HOME/skiaex/src
 c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/harfbuzz  app/main.cpp @${HOME}/skia/skia/cmake/skia_link_arguments.txt -L/usr/local/lib -lharfbuzz -o using_skia
 ```
 - Run it to produce pdf file with it's own source code
