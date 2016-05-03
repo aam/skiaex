@@ -1,10 +1,8 @@
 /*
  * Copyright 2016 Google Inc.
  *
- *
  * Use of this source code is governed by a BSD-style license that can be
  * found in the LICENSE file.
- *
  */
 
 #include "SkCanvas.h"
@@ -175,8 +173,7 @@ struct Face {
 
 class Placement {
  public:
-  Placement(Config &_config, SkWStream* outputStream) :
-    config(_config), pdfDocument(SkDocument::CreatePDF(outputStream)) {
+  Placement(Config &_config, SkWStream* outputStream) : config(_config) {
     face = new Face(config.font_file->value.c_str(), 0 /* index */);
     hb_font = hb_font_create(face->fHarfBuzzFace.get());
 
@@ -185,19 +182,21 @@ class Placement {
         FONT_SIZE_SCALE * config.font_size->value);
     hb_ot_font_set_funcs(hb_font);
 
-    typedef SkDocument::Attribute Attr;
-    Attr pdf_info[] = {
-        Attr(SkString("Title"),    config.title->value),
-        Attr(SkString("Author"),   config.author->value),
-        Attr(SkString("Subject"),  config.subject->value),
-        Attr(SkString("Keywords"), config.keywords->value),
-        Attr(SkString("Creator"),  config.creator->value),
-    };
-    int pdf_infoCount = sizeof(pdf_info) / sizeof(pdf_info[0]);
+    SkDocument::PDFMetadata pdf_info;
+    pdf_info.fTitle = config.title->value;
+    pdf_info.fAuthor = config.author->value;
+    pdf_info.fSubject = config.subject->value;
+    pdf_info.fKeywords = config.keywords->value;
+    pdf_info.fCreator = config.creator->value;
     SkTime::DateTime now;
     SkTime::GetDateTime(&now);
-
-    pdfDocument->setMetadata(pdf_info, pdf_infoCount, &now, &now);
+    pdf_info.fCreation.fEnabled = true;
+    pdf_info.fCreation.fDateTime = now;
+    pdf_info.fModified.fEnabled = true;
+    pdf_info.fModified.fDateTime = now;
+    pdfDocument = SkDocument::MakePDF(outputStream, SK_ScalarDefaultRasterDPI,
+                                      pdf_info, nullptr, true);
+    assert(pdfDocument);
 
     white_paint.setColor(SK_ColorWHITE);
 
