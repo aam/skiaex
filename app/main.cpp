@@ -194,9 +194,10 @@ class Placement {
         Attr(SkString("Creator"),  config.creator->value),
     };
     int pdf_infoCount = sizeof(pdf_info) / sizeof(pdf_info[0]);
-    std::unique_ptr<SkTime::DateTime> now = GetCurrentDateTime();
+    SkTime::DateTime now;
+    SkTime::GetDateTime(&now);
 
-    pdfDocument->setMetadata(pdf_info, pdf_infoCount, now.get(), now.get());
+    pdfDocument->setMetadata(pdf_info, pdf_infoCount, &now, &now);
 
     white_paint.setColor(SK_ColorWHITE);
 
@@ -293,24 +294,6 @@ private:
     pageCanvas->drawTextBlob(textBlobBuilder.build(), current_x, current_y, glyph_paint);
     return true;
   } // end of DrawGlyphs
-
-  std::unique_ptr<SkTime::DateTime> GetCurrentDateTime() {
-    time_t m_time;
-    time(&m_time);
-    struct tm* tstruct;
-    tstruct = gmtime(&m_time);
-
-    std::unique_ptr<SkTime::DateTime> now(new SkTime::DateTime());
-    now->fTimeZoneMinutes = 0;
-    now->fYear       = tstruct->tm_year + 1900;
-    now->fMonth      = SkToU8(tstruct->tm_mon + 1);
-    now->fDayOfWeek  = SkToU8(tstruct->tm_wday);
-    now->fDay        = SkToU8(tstruct->tm_mday);
-    now->fHour       = SkToU8(tstruct->tm_hour);
-    now->fMinute     = SkToU8(tstruct->tm_min);
-    now->fSecond     = SkToU8(tstruct->tm_sec);
-    return now;
-  }
 }; // end of Placement class
 
 int main(int argc, char** argv) {
