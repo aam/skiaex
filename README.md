@@ -38,10 +38,15 @@ git clone https://github.com/aam/skiaex.git
 cd $HOME/skiaex/src
 c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/harfbuzz  app/main.cpp @${HOME}/skia/skia/cmake/skia_link_arguments.txt -L/usr/local/lib -lharfbuzz -o using_skia
 ```
-- Run it to produce pdf file with it's own source code
+- Run it to produce pdf file with it's own source code on Linux
 ```
 LD_LIBRARY_PATH=/usr/local/lib ./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
 ```
+or on Mac
+```
+./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && open out-skiahf.pdf
+```
+
 
 Option 2 - Build and run with gyp
 ===
