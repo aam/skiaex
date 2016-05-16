@@ -19,8 +19,17 @@
       'sources': [
         'app/main.cpp'
       ],
-      'libraries': [
-         '/usr/local/lib/libharfbuzz.so',
+      'conditions': [
+        ['"<(OS)" == "mac"', {
+          'libraries': [
+             '/usr/local/lib/libharfbuzz.dylib',
+          ],
+        }],
+        ['"<(OS)" == "linux"', {
+          'libraries': [
+             '/usr/local/lib/libharfbuzz.so',
+          ],
+        }],
       ],
       'ldflags': [
         '-std=c++11',

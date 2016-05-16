@@ -79,7 +79,13 @@ cd src
 ninja -C out/Debug using_skia
 ```
 
-- Run built binary
+- Run built binary on Linux
 ```
 LD_LIBRARY_PATH=/usr/local/lib out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
-````
+```
+
+or on Mac
+
+```
+out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && open out-skiahf.pdf
+```
