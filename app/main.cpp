@@ -287,7 +287,7 @@ private:
       y += pos[i].y_advance / FONT_SIZE_SCALE;
     }
 
-    pageCanvas->drawTextBlob(textBlobBuilder.build(), current_x, current_y, glyph_paint);
+    pageCanvas->drawTextBlob(textBlobBuilder.make(), current_x, current_y, glyph_paint);
     return true;
   } // end of DrawGlyphs
 }; // end of Placement class
