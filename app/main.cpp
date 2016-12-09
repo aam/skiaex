@@ -235,8 +235,8 @@ class Placement {
     }
   }
 
-  bool Close() {
-    return pdfDocument->close();
+  void Close() {
+    pdfDocument->close();
   }
 
 private:
