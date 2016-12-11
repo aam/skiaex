@@ -1,0 +1,14 @@
+is_android = current_os == "android"
+is_fuchsia = current_os == "fuchsia"
+is_ios = current_os == "ios"
+is_linux = current_os == "linux"
+is_mac = current_os == "mac"
+is_win = current_os == "win"
+
+if (is_win) {
+  # Windows tool chain
+  set_default_toolchain("//gn:msvc")
+} else {
+  # GCC-like toolchains, including Clang.
+  set_default_toolchain("//gn:gcc_like")
+}

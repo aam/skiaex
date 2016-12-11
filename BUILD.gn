@@ -1,0 +1,29 @@
+executable("using_skia") {
+  sources = [
+    "app/main.cpp",
+  ]
+
+  include_dirs = [
+    "/usr/local/include/harfbuzz",
+    "//third_party/skia/include/config",
+    "//third_party/skia/include/core",
+  ]
+
+  lib_dirs = [
+    "//third_party/skia/out/Debug",
+  ]
+
+  cflags_cc = [
+    "-std=c++11",
+  ]
+
+  libs = [
+    "skia",
+    "harfbuzz",
+    "freetype",
+    "pthread",
+    "fontconfig",
+    "GL",
+    "dl"
+  ]
+}
