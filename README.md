@@ -46,6 +46,7 @@ solutions = [
 cache_dir = None
 ```
 - Get all the sources
+
 ```gclient sync``` should bring this app together with skia into your working folder.
 
 - Generate build files and run ninja build of the Skia
