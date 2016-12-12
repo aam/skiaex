@@ -18,37 +18,7 @@ cd harfbuzz
 make && sudo make install
 ```
 
-Option 1 - Build and run with Skia cmake build
-===
-- Get Skia sources and run cmake build of Skia
-```
-cd $HOME
-git clone https://skia.googlesource.com/skia.git
-cd skia/cmake
-cmake . -G Ninja
-ninja skia
-```
-- Get the source code for this app
-```
-cd $HOME
-git clone https://github.com/aam/skiaex.git
-```
-- Build it
-```
-cd $HOME/skiaex/src
-c++ @${HOME}/skia/skia/cmake/skia_compile_arguments.txt -I/usr/local/include/harfbuzz  app/main.cpp @${HOME}/skia/skia/cmake/skia_link_arguments.txt -L/usr/local/lib -lharfbuzz -o using_skia
-```
-- Run it to produce pdf file with it's own source code on Linux
-```
-LD_LIBRARY_PATH=/usr/local/lib ./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
-```
-or on Mac
-```
-./using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && open out-skiahf.pdf
-```
-
-
-Option 2 - Build and run with gyp
+Build and run using gn
 ===
 
 Create .gclient file in your working folder:
@@ -78,19 +48,23 @@ cache_dir = None
 - Get all the sources
 ```gclient sync``` should bring this app together with skia into your working folder.
 
-- Run ninja build
+- Generate build files and run ninja build of the Skia
 ```
-cd src
-ninja -C out/Debug using_skia
+$ cd src
+$ bin/fetch-gn
+$ cd third_party/skia
+$ gn gen out/Debug
+$ ninja -C out/Debug
+$ cd -
+```
+
+- Generate build files and run ninja build of skiaex
+```
+$ gn gen out/Debug
+$ ninja -C out/Debug using_skia
 ```
 
 - Run built binary on Linux
 ```
 LD_LIBRARY_PATH=/usr/local/lib out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && xdg-open out-skiahf.pdf
-```
-
-or on Mac
-
-```
-out/Debug/using_skia -z 8 -f fonts/DejaVuSans.ttf -m 20 -w 600 -h 800 < app/main.cpp && open out-skiahf.pdf
 ```
